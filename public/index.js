@@ -284,6 +284,7 @@ $(document).ready(function() {
     $send.attr('data-content', '').click(save);
     fillProjects(projects);
   }).catch(showLogin);*/
+  $send.attr('data-content', '').click(save);
   $('#random-min, #random-max, #contour-interval').click(function(e) { e.stopPropagation() });
   $('#random-min, #random-max, #contour-interval').keyup(function () { 
     this.value = this.value.replace(/[^0-9\.]/g,'');

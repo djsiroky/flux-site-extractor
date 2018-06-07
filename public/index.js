@@ -8,7 +8,7 @@ var saved = 0;
 var time = new Date().getTime()
 
 loadGoogleMaps(config.gmap);
-setFluxLogin();
+//setFluxLogin();
 
 function loadGoogleMaps(key) {
   var js, s = document.getElementsByTagName('script')[0];
@@ -66,12 +66,9 @@ function checkRectangle(rectangle) {
   var coords = getCoords(rectangle);
   var size = Math.abs(coords[3] - coords[1]) * Math.abs(coords[2] - coords[0])
   if (size > limit) {
-    // analytics.track('Labs - Extractor - Resize', {value: size})
-    // analytics.track('Labs - Extractor - Resize Error', {value: size})
     return false
   }
   else {
-    // analytics.track('Labs - Extractor - Resize', {value: size})
     return true
   }
 }
@@ -203,10 +200,7 @@ function saveProject(data, pid, options) {
 
 function showOpenLink(url) {
   $('#open').fadeIn(0.25).on('click', function() {
-    analytics.track('Labs - Extractor - Open')
-    analytics.track('Labs - Extractor - Features', {value: whichActive})
     sent++
-    events.map(function(event) { analytics.track.apply(analytics, event) })
     events = []
     hideOpenLink()
     var win = window.open(url);
@@ -264,7 +258,6 @@ function initMap() {
     if (places.length == 0) return;
     var bounds = new google.maps.LatLngBounds();
     var place = places[0]
-    analytics.track('Labs - Extractor - Search', {value: place})
     places.forEach(function(place) {
       if (place.geometry.viewport) bounds.union(place.geometry.viewport);
       else bounds.extend(place.geometry.location);
@@ -285,12 +278,12 @@ $(document).ready(function() {
   $('#projectlist').popup({ position: 'top center' })
   var $send = $('#send');
   $send.on('mouseover', onHoverSend).popup({ position : 'bottom center' });
-  checkLogin().then(function(projects) {
+  /*checkLogin().then(function(projects) {
     $('#login').hide();
     $('.ui.accordion').accordion()
     $send.attr('data-content', '').click(save);
     fillProjects(projects);
-  }).catch(showLogin);
+  }).catch(showLogin);*/
   $('#random-min, #random-max, #contour-interval').click(function(e) { e.stopPropagation() });
   $('#random-min, #random-max, #contour-interval').keyup(function () { 
     this.value = this.value.replace(/[^0-9\.]/g,'');
@@ -303,8 +296,5 @@ $(document).ready(function() {
 }); 
 
 window.addEventListener('beforeunload', function(e) {
-  analytics.track('Labs - Extractor - Sent', {value: sent})
-  analytics.track('Labs - Extractor - Saved', {value: saved})
-  analytics.track('Labs - Extractor - Time', {value: (new Date().getTime() - time)/1000})
 })
 

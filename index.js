@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var express = require('express')
+
 var xml = require('xml2js').parseString;
 var bodyParser = require('body-parser');
 var request = require('request');
@@ -56,10 +57,6 @@ app.use(function(err, req, res, next) {
 });
 
 var httpsOptions = {
-  key: fs.readFileSync(config.sslKey),
-  cert: fs.readFileSync(config.sslCert),
-  ca: fs.readFileSync(config.sslCA)
 }
-
+console.log("Listening on port: ", config.port);
 http.createServer(app).listen(config.port);
-https.createServer(httpsOptions, app).listen(config.portSSL);

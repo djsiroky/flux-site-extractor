@@ -105,61 +105,64 @@ function whichActive() {
 
 
 function save() {
+  console.log("You clicked save!");
   if (loading) return onError('Please wait');
   var error = checkErrors();
   if (error) return onError(error);
-  checkLogin().then(function() {
-    loading = true;
-    hideOpenLink();
-    var coords = getCoords(rectangle);
-    var $send = $('#send');
-    $send.addClass('loading')
-         .attr('data-content', 'This might take a minute')
-         .popup('show');
-    var other = $('#toggle-other').hasClass('checked')
-    var save = {
-      building: $('#toggle-buildings').hasClass('checked'),
-      building_3d: $('#toggle-buildings-3d').hasClass('checked'),
-      building_3d_random: $('#toggle-buildings-3d-random').hasClass('checked'),
-      highway: other,
-      parks: other,
-      water: other,
-      topography: $('#toggle-topography').hasClass('checked'),
-      contours: $('#toggle-contours').hasClass('checked'),
+  loading = true;
+  hideOpenLink();
+  var coords = getCoords(rectangle);
+  var $send = $('#send');
+  $send.addClass('loading')
+       .attr('data-content', 'This might take a minute')
+       .popup('show');
+  var other = $('#toggle-other').hasClass('checked')
+  var save = {
+    building: $('#toggle-buildings').hasClass('checked'),
+    building_3d: $('#toggle-buildings-3d').hasClass('checked'),
+    building_3d_random: $('#toggle-buildings-3d-random').hasClass('checked'),
+    highway: other,
+    parks: other,
+    water: other,
+    topography: $('#toggle-topography').hasClass('checked'),
+    contours: $('#toggle-contours').hasClass('checked'),
+  }
+  var options = {
+    coordinates: coords,
+    features: {
+      highway: save.highway, 
+      building: save.building, 
+      building_3d: save.building_3d, 
+      building_3d_random: save.building_3d_random,
+      topography: save.topography, 
+      contours: save.contours, 
+      waterway: save.water, 
+      leisure: save.parks, 
+    },
+  }
+  options.contour_interval = parseInt($('#contour-interval').val())
+  options.random_min = parseFloat($('#random-min').val())
+  options.random_max = parseFloat($('#random-max').val())
+  options.high_res = $('#toggle-resolution').hasClass('checked')
+  $.ajax({ url: 'geo/', type: 'POST', contentType: 'application/json', data: JSON.stringify(options), success: function(data) {
+    $send.popup('hide')
+         .removeClass('loading')
+         .attr('data-content', '');
+    loading = false;
+    var pid = $('#projectlist .menu .item.selected').attr('data-id');
+    if (pid === '0') {
+      createProject(baseName).then(function(project) {
+        $('#projectlist .menu .item.selected').attr('data-id', project.id);
+        saveProject(data, project.id, options);
+        console.log(data);
+	console.log(options);
+      });
+    } else {
+      //saveProject(data, pid, options);
+      console.log(data);
+      console.log(options);
     }
-    var options = {
-      coordinates: coords,
-      features: {
-        highway: save.highway, 
-        building: save.building, 
-        building_3d: save.building_3d, 
-        building_3d_random: save.building_3d_random,
-        topography: save.topography, 
-        contours: save.contours, 
-        waterway: save.water, 
-        leisure: save.parks, 
-      },
-    }
-    options.contour_interval = parseInt($('#contour-interval').val())
-    options.random_min = parseFloat($('#random-min').val())
-    options.random_max = parseFloat($('#random-max').val())
-    options.high_res = $('#toggle-resolution').hasClass('checked')
-    $.ajax({ url: 'geo/', type: 'POST', contentType: 'application/json', data: JSON.stringify(options), success: function(data) {
-      $send.popup('hide')
-           .removeClass('loading')
-           .attr('data-content', '');
-      loading = false;
-      var pid = $('#projectlist .menu .item.selected').attr('data-id');
-      if (pid === '0') {
-        createProject(baseName).then(function(project) {
-          $('#projectlist .menu .item.selected').attr('data-id', project.id);
-          saveProject(data, project.id, options);
-        });
-      } else {
-        saveProject(data, pid, options);
-      }
-    }})
-  }).catch(onError.bind('Please log in'))
+  }})
 }
 
 function saveProject(data, pid, options) {

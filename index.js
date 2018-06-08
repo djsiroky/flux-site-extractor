@@ -21,8 +21,14 @@ var urls = [
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 function tryUrl(i, req, res, next) {
+  console.log(req.body);
   var coords = req.body.coordinates;
   if (!urls[i]) next(new Error('Could not reach data'))
   request({method: 'GET', timeout: 15000, url: urls[i] + '*[bbox=' + coords + ']'}, function(error, response, data) {
@@ -35,6 +41,8 @@ function tryUrl(i, req, res, next) {
       result.bounds = { latMin: coords[1], latMax: coords[3], lngMin: coords[0], lngMax: coords[2] }
       parse(result, req.body, (error, analyzed) => {
         if (error) next(new Error('Error analyzing data'));
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.json(analyzed);
       });
     });

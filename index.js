@@ -8,6 +8,7 @@ var xml = require('xml2js').parseString;
 var bodyParser = require('body-parser');
 var request = require('request');
 var parse = require('./parse');
+var saveToSpeckle = require('./saveToSpeckle');
 var https = require('https');
 var http = require('http');
 var config = require('./public/config');
@@ -41,9 +42,11 @@ function tryUrl(i, req, res, next) {
       result.bounds = { latMin: coords[1], latMax: coords[3], lngMin: coords[0], lngMax: coords[2] }
       parse(result, req.body, (error, analyzed) => {
         if (error) next(new Error('Error analyzing data'));
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.json(analyzed);
+	saveToSpeckle(analyzed, (error, streamId) => {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+		res.json(streamId);
+	});
       });
     });
   });

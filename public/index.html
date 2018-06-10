@@ -9,11 +9,35 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.8/semantic.min.js"></script>
 		<script src="./config.js"></script>
     <script src="https://npmcdn.com/flux-sdk-browser@0.4/dist/flux-sdk-min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.min.js"></script>
 		<script src="./flux-sdk-helpers.js"></script>
 		<script src="./index.js"></script>
 	</head>
 	<body>
 		<div id="map"></div>
+<div class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Success!
+  </div>
+  <div class="content">
+    <div class="description">
+      <div class="ui header">We've passed the data to Speckle.</div>
+      <p>Here's the stream ID to open in Rhino or Dynamo: <span id="streamId"></span></p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black deny button">
+     Try again 
+    </div>
+    <div class="ui positive right labeled icon button">
+      Got it!
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
 		<div id='container' class="ui container">
 			<div id='header'>
 				<h1><span style="text-decoration: line-through;">FLUX</span>RIP</h1>

@@ -8,6 +8,10 @@ var saved = 0;
 var time = new Date().getTime()
 
 loadGoogleMaps(config.gmap);
+
+$('.ui.modal')
+  .modal()
+;
 //setFluxLogin();
 
 function loadGoogleMaps(key) {
@@ -149,6 +153,10 @@ function save() {
          .removeClass('loading')
          .attr('data-content', '');
     loading = false;
+    document.getElementById('streamId').innerText = data;
+    $('.ui.modal')
+     .modal('show')
+    ;
     var pid = $('#projectlist .menu .item.selected').attr('data-id');
     if (pid === '0') {
       createProject(baseName).then(function(project) {

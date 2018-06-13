@@ -30,6 +30,25 @@ module.exports = function(response, cb) {
 					applicationId: uuidv4()
 				}
 				objectRequest.push(obj)
+			} else if (item.primitive == "mesh") {
+				if (item['attributes'] && item['attributes']['type']) {
+					item['attributes']['osm_type'] = item['attributes']['type'];
+					delete item['attributes']['type'];
+				}
+				let vs = [].concat.apply([], item.vertices)
+				let fs = [].concat.apply([], item.faces)
+				let obj = {
+					//name: scene1._sceneObjectMap[key].name,
+					type: item.primitive.charAt(0).toUpperCase() + item.primitive.slice(1),
+					vertices: vs,
+					faces: fs,
+					properties: item['attributes'],
+					geometryHash: item.primitive.charAt(0).toUpperCase() + item.primitive.slice(1) + "." + CryptoJS.enc.Base64.stringify(CryptoJS.MD5(vals.toString())),
+					hash: CryptoJS.enc.Base64.stringify(CryptoJS.MD5(CryptoJS.enc.Base64.stringify(CryptoJS.MD5(vals.toString())) + CryptoJS.enc.Base64.stringify(CryptoJS.MD5(JSON.stringify(item['attributes']))))),
+					applicationId: uuidv4()
+				}
+				objectRequest.push(obj)
+
 			}
 			
 		});
